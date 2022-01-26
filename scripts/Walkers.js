@@ -73,10 +73,17 @@ const assignedCityNames = (assignments) => {
         for (const city of cities) {
             // Add the name of the matching city to the array of city names
             if (city.id === assignment.cityId) {
-                cityNames = `${cityNames} and ${city.name}`
+                // if city name is an empty string, just print the one city
+                if (cityNames === "") {
+                    cityNames = `${city.name} `
+                }
+                else {
+                    cityNames += `and ${city.name}`
+                }
             }
         }
     }
+
     // After the loop is done, return the string
     return cityNames
 }
