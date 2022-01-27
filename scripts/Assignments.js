@@ -1,11 +1,12 @@
 import { getPets, getWalkers } from "./database.js"
-import { getCities } from "./database.js"
+import { getCities, getWalkerCities } from "./database.js"
 
 // Get copy of state for use in this module
 const pets = getPets()
 const walkers = getWalkers()
 
 let cities = getCities()
+let walkerCities = getWalkerCities()
 
 
 // Function whose responsibility is to find the walker assigned to a pet
@@ -22,12 +23,13 @@ const findWalker = (pet, walkers) => {
 }
 
 // function called findWalkerCity to find walker's city assignments
-const findWalkerCity = (walker, allCities) => {
+// link walkerCities to walkers
+const findWalkerCity = (walker, walkerCities) => {
     let walkerAllCities = []
 
-    for (const city of allCities) {
-        if (walkerCities.walkerId === walker.id) {
-            walkerAllCities.push(city)
+    for (const walkerCity of walkerCities) {
+        if (walkerCity.walkerId === walker.id) {
+            walkerAllCities.push(walkerCity)
 
         }
 
@@ -36,21 +38,20 @@ const findWalkerCity = (walker, allCities) => {
 }
 
 
-// Function whose responsibility is to find city for walkers
+// Function whose responsibility is to link walkerCities to cities
 const findCity = (cities, walkerAllCities) => {
-    let walkerCity = ""
+    let cityHTML = ""
 
     for (const walkerCity of walkerAllCities) {
-        for (city of cities) {
-            if (walkerCities.cityId === cities.id) {
-                walkerCity.push(city)
-                walkerCity += `${city.name}`
-                // walkerCity += `${city.name}
+        for (const city of cities) {
+            if (walkerCity.cityId === city.id) {
+                cityHTML += `${city.name}`
+
 
             }
         }
     }
-    return walkerCity
+    return cityHTML
 }
 
 
@@ -61,14 +62,14 @@ export const Assignments = () => {
 
     for (const currentPet of pets) {
         const currentPetWalker = findWalker(currentPet, walkers)
-        // invoke both functions from above
-        const findWalkerCity
-        const fincCity
+        const walkerAllCities = findWalkerCity(currentPetWalker, walkerCities)
+        const walkerCity = findCity(cities, walkerAllCities)
+
 
         assignmentHTML += `
             <li>
                 ${currentPet.name} is being walked by
-                ${currentPetWalker.name} in ${currentPetWalker.city}
+                ${currentPetWalker.name} in ${walkerCity}
             </li>
         `
     }
